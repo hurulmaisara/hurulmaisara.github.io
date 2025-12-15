@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Bento Grid - Plant Science</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Reset and Global Styles */
+        :root {
+            /* Updated Theme: Deep Ocean Blue Accent */
+            --color-white: #ffffff;
+            --color-light-grey: #f4f7f9;
+            --color-medium-grey: #e3e8ee;
+            --color-dark-grey: #334155; /* For text */
+            --color-accent: #004d99; /* Deep Ocean Blue */
+            --color-shadow: rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+            --font-family: 'Inter', sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--color-light-grey);
+            color: var(--color-dark-grey);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Bento Grid Container */
+        .bento-grid {
+            width: 100%;
+            max-width: 1200px; /* Max desktop width */
+            display: grid;
+            gap: 16px;
+            padding: 16px;
+            /* 2. Stacked vertically on mobile (default) */
+            grid-template-columns: 1fr;
+            grid-auto-rows: minmax(150px, auto);
+        }
+
+        /* Grid Card Styling */
+        .grid-card {
+            background-color: var(--color-white);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            border: 1px solid var(--color-medium-grey);
+            box-shadow: 0 4px 6px var(--color-shadow);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .grid-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px var(--color-shadow);
+        }
+
+        /* Specific Card Content Styles */
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card-profile h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+            color: var(--color-accent);
+        }
+
+        .card-profile p {
+            font-size: 1em;
+            color: var(--color-dark-grey);
+        }
+
+        .card-profile .tagline {
+            font-style: italic;
+            font-weight: 500;
+            color: #5d6d7e; /* Slightly softer grey for tagline */
+            margin-top: 10px;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin-right: 15px;
+            margin-top: 15px;
+            color: var(--color-dark-grey);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: color 0.2s;
+        }
+
+        .social-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .card-location .time {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: var(--color-dark-grey);
+            line-height: 1;
+        }
+
+        .card-tech-stack ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-tech-stack li {
+            background-color: var(--color-medium-grey); /* Use medium grey for subject tags */
+            color: var(--color-dark-grey);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .card-case-study {
+            border-left: 5px solid var(--color-accent);
+        }
+
+        .card-case-study h3 {
+            color: var(--color-accent);
+            font-size: 1.3em;
+        }
+
+        /* Desktop Layout (Grid Layout) */
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-auto-rows: 250px;
+            }
+
+            /* Card 1 (Profile): Large box (2x2) */
+            .card-profile {
+                grid-column: span 2;
+                grid-row: span 2;
+                justify-content: flex-end;
+            }
+
+            /* Card 2 (Location): Small box (1x1) */
+            .card-location {
+                grid-column: 3 / 4;
+                grid-row: 1 / 2;
+                text-align: right;
+            }
+
+            /* Card 3 (Tech Stack): Medium box (1x1) */
+            .card-tech-stack {
+                grid-column: 3 / 4;
+                grid-row: 2 / 3;
+            }
+
+            /* Card 4 (Case Study): Medium box (1x1) */
+            .card-case-study {
+                grid-column: 1 / 2;
+                grid-row: 3 / 4;
+            }
+
+            /* Card 5 (Hobby): Small box (1x1) */
+            .card-hobby {
+                grid-column: 2 / 3;
+                grid-row: 3 / 4;
+            }
+
+            /* Card 6 (Playlist): Wide box (3x1) at the bottom */
+            .card-playlist {
+                grid-column: 1 / 4;
+                grid-row: 4 / 5;
+            }
+        }
+
+        /* Utility classes for content structure */
+        .mb-2 { margin-bottom: 20px; }
+        .mb-1 { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <main class="bento-grid">
+
+        <section class="grid-card card-profile">
+            <div class="mb-2">
+                <h1>HURUL MAISARA</h1>
+                <p><strong>Program:</strong> Plant Science</p>
+                <p><strong>Year:</strong> Year 1 Student</p>
+                <p class="tagline">**'Drone in modern farming.'**</p>
+            </div>
+            <div class="social-links">
+                <a href="#" target="_blank">LinkedIn</a>
+                <a href="#" target="_blank">GitHub</a>
+                <a href="#" target="_blank">UMT Portal</a>
+            </div>
+        </section>
+
+        <section class="grid-card card-location">
+            <div>
+                <p class="card-title">Current Location</p>
+                <p>UMT, Kuala Nerus</p>
+            </div>
+            <div class="time">10:48 AM</div> </section>
+
+        <section class="grid-card card-tech-stack">
+            <p class="card-title">Key Subjects & Skills</p>
+            <ul>
+                <li>Computer System and Application</li>
+                <li>Microbiology</li>
+                <li>Excel</li>
+                <li>Lab Analysis</li>
+            </ul>
+        </section>
+
+        <section class="grid-card card-case-study">
+            <p class="mb-1">Core Research Interest</p>
+            <h3>Drone as an innovative technology in modern farming</h3>
+            <p>Focused on methods for **Analyzing Soil pH** and nutrient levels using remote sensing data collected by UAVs (drones) for precision agriculture applications.</p>
+        </section>
+
+        <section class="grid-card card-hobby">
+            <p class="card-title">Hobby</p>
+            <p>Listening to music. Currently exploring instrumental soundtracks for focused study and deep work sessions.</p>
+        </section>
+
+        <section class="grid-card card-playlist">
+            <p class="card-title">Study Focus Playlist</p>
+            <p>This is a placeholder for an embedded music player (e.g., Spotify or YouTube iframe) to provide background study music.</p>
+            <div style="height: 100px; background-color: var(--color-medium-grey); border-radius: 8px; margin-top: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; color: var(--color-dark-grey);">
+                [ Placeholder for Music Player Widget ]
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Simple script to update the time dynamically
+        const timeElement = document.querySelector('.card-location .time');
+        if (timeElement) {
+            const updateTime = () => {
+                const now = new Date();
+                // Format to HH:MM AM/PM or 24-hour based on preference (using 24-hour here for clean look)
+                timeElement.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+            };
+            // Set the initial time
+            updateTime();
+            // Update every minute
+            setInterval(updateTime, 60000);
+        }
+    </script>
+</body>
+</html>
