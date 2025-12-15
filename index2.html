@@ -8,11 +8,10 @@
     <style>
         /* CSS Reset and Global Styles */
         :root {
-            /* Updated Theme: Deep Ocean Blue Accent */
             --color-white: #ffffff;
             --color-light-grey: #f4f7f9;
             --color-medium-grey: #e3e8ee;
-            --color-dark-grey: #334155; /* For text */
+            --color-dark-grey: #334155;
             --color-accent: #004d99; /* Deep Ocean Blue */
             --color-shadow: rgba(0, 0, 0, 0.05);
             --border-radius: 12px;
@@ -38,11 +37,10 @@
         /* Bento Grid Container */
         .bento-grid {
             width: 100%;
-            max-width: 1200px; /* Max desktop width */
+            max-width: 1200px;
             display: grid;
             gap: 16px;
             padding: 16px;
-            /* 2. Stacked vertically on mobile (default) */
             grid-template-columns: 1fr;
             grid-auto-rows: minmax(150px, auto);
         }
@@ -54,47 +52,58 @@
             padding: 20px;
             border: 1px solid var(--color-medium-grey);
             box-shadow: 0 4px 6px var(--color-shadow);
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
+        /* Subtle Hover Effect */
         .grid-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px var(--color-shadow);
+            transform: scale(1.01);
+            box-shadow: 0 10px 20px var(--color-shadow);
+            z-index: 10;
         }
-
-        /* Specific Card Content Styles */
-        .card-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            margin-bottom: 10px;
+        
+        /* Card 1 (Profile) - FINAL STYLES WITH BG IMAGE FALLBACKS */
+        .card-profile {
+            /* 1. Set a solid color fallback */
+            background-color: var(--color-accent); 
+            
+            /* 2. Try all common local file paths (browser will use the first one it finds) */
+            /* If your image is named 'my_pic.jpg', CHANGE THE URLS BELOW to url('my_pic.jpg') */
+            background-image: url('bg.jpg'), url('bg.png'), url('bg.jpeg'), 
+                              url('https://picsum.photos/id/1057/800/600'); /* 3. Guaranteed public image fallback */
+            
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            
+            /* Add a dark overlay via blend mode */
+            background-blend-mode: multiply;
         }
-
-        .card-profile h1 {
-            font-size: 2.2em;
-            margin-bottom: 5px;
-            color: var(--color-accent);
-        }
-
-        .card-profile p {
-            font-size: 1em;
-            color: var(--color-dark-grey);
+        
+        /* Ensure all content on the profile card is white/light for contrast */
+        .card-profile h1,
+        .card-profile p,
+        .card-profile a {
+            color: var(--color-white) !important;
         }
 
         .card-profile .tagline {
-            font-style: italic;
-            font-weight: 500;
-            color: #5d6d7e; /* Slightly softer grey for tagline */
-            margin-top: 10px;
+            color: #e0e0e0 !important;
         }
 
+        /* Specific Card Content Styles */
+        .card-profile h1 {
+            font-size: 2.2em;
+            margin-bottom: 5px;
+        }
+        
         .social-links a {
             display: inline-block;
             margin-right: 15px;
             margin-top: 15px;
-            color: var(--color-dark-grey);
             text-decoration: none;
             font-weight: 500;
             font-size: 0.9em;
@@ -102,7 +111,14 @@
         }
 
         .social-links a:hover {
-            color: var(--color-accent);
+            color: lightgray !important;
+        }
+
+        /* Other Cards (Keep dark text) */
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
 
         .card-location .time {
@@ -120,7 +136,7 @@
         }
 
         .card-tech-stack li {
-            background-color: var(--color-medium-grey); /* Use medium grey for subject tags */
+            background-color: var(--color-medium-grey);
             color: var(--color-dark-grey);
             padding: 6px 12px;
             border-radius: 6px;
@@ -128,13 +144,15 @@
             font-weight: 500;
         }
 
-        .card-case-study {
+        .card-case-study, .card-reflection {
             border-left: 5px solid var(--color-accent);
+            padding-left: 15px;
         }
 
-        .card-case-study h3 {
+        .card-case-study h3, .card-reflection h3 {
             color: var(--color-accent);
             font-size: 1.3em;
+            margin-top: 5px;
         }
 
         /* Desktop Layout (Grid Layout) */
@@ -164,15 +182,19 @@
                 grid-row: 2 / 3;
             }
 
-            /* Card 4 (Case Study): Medium box (1x1) */
+            /* Row 3: Divided into 3 equal cards */
             .card-case-study {
                 grid-column: 1 / 2;
                 grid-row: 3 / 4;
             }
 
-            /* Card 5 (Hobby): Small box (1x1) */
             .card-hobby {
                 grid-column: 2 / 3;
+                grid-row: 3 / 4;
+            }
+
+            .card-reflection { /* New Card */
+                grid-column: 3 / 4;
                 grid-row: 3 / 4;
             }
 
@@ -211,7 +233,8 @@
                 <p class="card-title">Current Location</p>
                 <p>UMT, Kuala Nerus</p>
             </div>
-            <div class="time">10:48 AM</div> </section>
+            <div class="time"></div>
+        </section>
 
         <section class="grid-card card-tech-stack">
             <p class="card-title">Key Subjects & Skills</p>
@@ -226,12 +249,18 @@
         <section class="grid-card card-case-study">
             <p class="mb-1">Core Research Interest</p>
             <h3>Drone as an innovative technology in modern farming</h3>
-            <p>Focused on methods for **Analyzing Soil pH** and nutrient levels using remote sensing data collected by UAVs (drones) for precision agriculture applications.</p>
+            <p>Focused on methods for Analyzing Soil pH and nutrient levels using remote sensing data collected by UAVs (drones) for precision agriculture applications.</p>
         </section>
 
         <section class="grid-card card-hobby">
             <p class="card-title">Hobby</p>
             <p>Listening to music. Currently exploring instrumental soundtracks for focused study and deep work sessions.</p>
+        </section>
+
+        <section class="grid-card card-reflection">
+            <p class="mb-1">Reflection</p>
+            <h3>Why Plant Science Matters in Malaysia</h3>
+            <p>Sustainable food security is crucial for our future. By optimizing local processing methods, we can reduce waste and improve nutrition.</p>
         </section>
 
         <section class="grid-card card-playlist">
@@ -245,17 +274,14 @@
     </main>
 
     <script>
-        // Simple script to update the time dynamically
+        // Script to update the time dynamically
         const timeElement = document.querySelector('.card-location .time');
         if (timeElement) {
             const updateTime = () => {
                 const now = new Date();
-                // Format to HH:MM AM/PM or 24-hour based on preference (using 24-hour here for clean look)
                 timeElement.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
             };
-            // Set the initial time
             updateTime();
-            // Update every minute
             setInterval(updateTime, 60000);
         }
     </script>
