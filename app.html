@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Companion | Cozy Study Buddy</title>
+    <style>
+        :root {
+            --bg-color: #fdf6f0;
+            --card-bg: #ffffff;
+            --accent-soft: #ffcfdf;
+            --accent-main: #fca3b7;
+            --text-color: #6d5d6e;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --list-bg: #fffcf9;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            font-family: var(--font-main);
+            color: var(--text-color);
+        }
+
+        .app-container {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            width: 350px;
+            border: 8px solid var(--accent-soft);
+        }
+
+        /* The Pet Section */
+        .pet-display {
+            font-size: 80px;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.05));
+        }
+
+        .pet-display.bouncing {
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* The Timer Section */
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--accent-main);
+            letter-spacing: -2px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            font-family: var(--font-main);
+        }
+
+        .btn-start { background-color: var(--accent-soft); color: var(--text-color); }
+        .btn-start:hover { background-color: var(--accent-main); color: white; }
+        .btn-pause { background-color: #eee; color: #777; }
+        .btn-reset { background-color: #fcecec; color: #d68c8c; }
+        .btn-add { background-color: var(--accent-soft); border-radius: 0 12px 12px 0; }
+        .btn-clear { background-color: transparent; color: #bba; font-size: 0.8rem; margin-top: 10px; text-decoration: underline; }
+
+        /* To-Do List Section */
+        .todo-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--accent-soft);
+            text-align: left;
+        }
+
+        .todo-input-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--accent-soft);
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            outline: none;
+            font-family: var(--font-main);
+        }
+
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            background: var(--list-bg);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .todo-item:hover { background: #fff1f5; }
+        .todo-item.completed {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .todo-item::before {
+            content: '✨';
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        .status-text {
+            margin-top: 15px;
+            font-style: italic;
+            opacity: 0.7;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body><a href="https://hurulmaisara.github.io" style="position:absolute; top:20px; left:20px;">← Back to Home</a>
+
+    <div class="app-container">
+        <div id="pet" class="pet-display">😴</div>
+        
+        <div id="timer" class="timer-display">25:00</div>
+        
+        <div class="controls">
+            <button class="btn-start" onclick="startTimer()">Start</button>
+            <button class="btn-pause" onclick="pauseTimer()">Pause</button>
+            <button class="btn-reset" onclick="resetTimer()">Reset</button>
+        </div>
+
+        <div class="todo-section">
+            <div class="todo-input-group">
+                <input type="text" id="todoInput" placeholder="What's the plan?">
+                <button class="btn-add" onclick="addTodo()">Add</button>
+            </div>
+            <ul id="todoList" class="todo-list"></ul>
+            <center><button class="btn-clear" onclick="clearTodos()">Clear All Tasks</button></center>
+        </div>
+
+        <div id="status" class="status-text">Your buddy is napping...</div>
+    </div>
+
+    <audio id="finishSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+    <script>
+        // Timer Logic
+        let timeLeft = 25 * 60;
+        let timerId = null;
+        let isRunning = false;
+
+        const petEl = document.getElementById('pet');
+        const timerEl = document.getElementById('timer');
+        const statusEl = document.getElementById('status');
+        const sound = document.getElementById('finishSound');
+        const todoInput = document.getElementById('todoInput');
+        const todoListEl = document.getElementById('todoList');
+
+        function updateDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.title = `(${timerEl.textContent}) Focus Companion`;
+        }
+
+        function startTimer() {
+            if (isRunning) return;
+            isRunning = true;
+            petEl.textContent = '😎';
+            petEl.classList.add('bouncing');
+            statusEl.textContent = 'Focusing together...';
+            timerId = setInterval(() => {
+                timeLeft--;
+                updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    completeSession();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            petEl.textContent = '🤔';
+            petEl.classList.remove('bouncing');
+            statusEl.textContent = 'Taking a quick breather?';
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            timeLeft = 25 * 60;
+            updateDisplay();
+            petEl.textContent = '😴';
+            petEl.classList.remove('bouncing');
+            statusEl.textContent = 'Your buddy is napping...';
+        }
+
+        function completeSession() {
+            isRunning = false;
+            petEl.textContent = '🥳';
+            petEl.classList.remove('bouncing');
+            statusEl.textContent = 'Great job! Time for a break.';
+            sound.play();
+            alert("Session complete! Your companion is proud of you.");
+        }
+
+        // To-Do List Logic
+        let tasks = JSON.parse(localStorage.getItem('focusTasks')) || [];
+
+        function renderTodos() {
+            todoListEl.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${task.completed ? 'completed' : ''}`;
+                li.textContent = task.text;
+                li.onclick = () => toggleTodo(index);
+                todoListEl.appendChild(li);
+            });
+            localStorage.setItem('focusTasks', JSON.stringify(tasks));
+        }
+
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text) {
+                tasks.push({ text, completed: false });
+                todoInput.value = '';
+                renderTodos();
+            }
+        }
+
+        function toggleTodo(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTodos();
+        }
+
+        function clearTodos() {
+            if(confirm("Clear all tasks?")) {
+                tasks = [];
+                renderTodos();
+            }
+        }
+
+        // Listen for Enter key on input
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTodo();
+        });
+
+        // Initialize
+        updateDisplay();
+        renderTodos();
+    </script>
+</body>
+</html>
